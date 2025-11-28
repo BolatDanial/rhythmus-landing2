@@ -1,26 +1,121 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --black-whitewhite: rgba(255, 255, 255, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat);
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 18px; /* additional bump on larger screens */
+  }
+}
+
+@media (min-width: 1536px) {
+  html {
+    font-size: 19px; /* additional bump on very large screens */
+  }
+}
+
+/* Preloader styles */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Video fullscreen overlay */
+.video-fullscreen-overlay {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Progress ring styles */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring__background {
+  fill: none;
+  stroke: rgba(254, 125, 26, 0.15);
+  stroke-width: 4;
+}
+
+.progress-ring__progress {
+  fill: none;
+  stroke: #fe7d1a;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 0 999;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+/* Language transition */
+.language-transition {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.5s ease;
+}
+
+.language-transition.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }

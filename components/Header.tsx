@@ -38,7 +38,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center gap-11 mb-2.5 flex-1 justify-center">
+        <nav className="hidden md:flex items-center gap-11 mb-2.5 absolute left-1/2 -translate-x-1/2">
           <button
             onClick={() => handleNavClick('products-section')}
             className="px-2.5 pt-2.5 hover:opacity-80 transition-opacity"
@@ -60,7 +60,7 @@ export default function Header() {
         </nav>
 
         {/* Desktop Login Button and Language Switcher */}
-        <div className="hidden md:flex items-center gap-3 mb-1">
+        <div className="hidden md:flex items-center gap-3 mb-1 ml-auto">
           <button className="px-4 mr-6 py-2 text-[#35374d] text-base font-medium hover:bg-[#35374d0a] rounded-md transition-all">
             {t.login}
           </button>

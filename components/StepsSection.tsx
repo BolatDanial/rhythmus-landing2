@@ -55,38 +55,48 @@ export default function StepsSection() {
     // Clean up previous timers and animation frames
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = undefined;
     }
     if (imageTimerRef.current) {
       clearTimeout(imageTimerRef.current);
+      imageTimerRef.current = undefined;
     }
     if (imageProgressIntervalRef.current) {
       clearInterval(imageProgressIntervalRef.current);
+      imageProgressIntervalRef.current = undefined;
     }
-
+  
+    // Reset progress immediately
     setProgress(0);
-
+  
     if (currentStep.isVideo && videoRef.current) {
       const video = videoRef.current;
       
+      // Reset video to start
+      video.currentTime = 0;
+      
       const updateProgress = () => {
-        if (video.duration) {
+        if (video.duration && !video.paused) {
           setProgress((video.currentTime / video.duration) * 100);
+          animationFrameRef.current = requestAnimationFrame(updateProgress);
         }
-        animationFrameRef.current = requestAnimationFrame(updateProgress);
       };
-
+  
       const handlePlaying = () => {
         updateProgress();
       };
-
+  
       const handleEnded = () => {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
         setProgress(100);
         setTimeout(advanceToNextStep, 200);
       };
-
+  
       video.addEventListener('playing', handlePlaying);
       video.addEventListener('ended', handleEnded);
-
+  
       return () => {
         video.removeEventListener('playing', handlePlaying);
         video.removeEventListener('ended', handleEnded);
@@ -95,32 +105,36 @@ export default function StepsSection() {
         }
       };
     } else {
-      // Handle image as a 10-second "video"
+      // Handle image with better timing control
       const startTime = Date.now();
       const duration = IMAGE_DISPLAY_DURATION;
-
-      // Update progress smoothly
+      let isActive = true; // Flag to prevent updates after cleanup
+  
       const updateImageProgress = () => {
+        if (!isActive) return;
+        
         const elapsed = Date.now() - startTime;
         const newProgress = Math.min((elapsed / duration) * 100, 100);
         setProgress(newProgress);
       };
-
-      // Update progress every 50ms for smooth animation
+  
       imageProgressIntervalRef.current = setInterval(updateImageProgress, 50);
-
-      // Set timer to advance to next step after duration
+  
       imageTimerRef.current = setTimeout(() => {
+        if (!isActive) return;
         setProgress(100);
         setTimeout(advanceToNextStep, 200);
       }, duration);
-
+  
       return () => {
+        isActive = false; // Prevent any pending updates
         if (imageTimerRef.current) {
           clearTimeout(imageTimerRef.current);
+          imageTimerRef.current = undefined;
         }
         if (imageProgressIntervalRef.current) {
           clearInterval(imageProgressIntervalRef.current);
+          imageProgressIntervalRef.current = undefined;
         }
       };
     }
